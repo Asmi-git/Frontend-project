@@ -246,47 +246,78 @@
             <p class="footer-para">Developed by Asmi &copy; 2025 | Contact: asmi11112005@gmail.com</p>
         </div>
     </div>
-    <script>
-        var tablinks = document.getElementsByClassName("tab-links");
-        var tabcontents = document.getElementsByClassName("tab-contents");
-        function openTab(tabname) {
-            for (tablink of tablinks) {
-                tablink.classList.remove("active-link");
-            }
-            for (tabcontent of tabcontents) {
-                tabcontent.classList.remove("active-tab");
-            }
-            event.currentTarget.classList.add("active-link");
-            document.getElementById(tabname).classList.add("active-tab");
-        }
-        function sendMail(event) {
-            event.preventDefault();
-            let parms = {
-                name: document.getElementById("exampleFormControlInput1").value,
-                email: document.getElementById("exampleFormControlInput2").value,
-                message: document.getElementById("exampleFormControlTextarea1").value
-            };
-            emailjs.send("service_gmshagz", "template_rufc6pi", parms).then(function (response) {
-                console.log("Email Sent Successfully", response);
-                document.getElementById("msg").innerText = "Message Sent Successfully";
-                document.querySelector("form").reset();
-                setTimeout(() => {
-                    document.getElementById("msg").innerText = "";
-                }, 5000);
-            }, function (error) {
-                console.error("Email send failed", error);
-                document.getElementById("msg").innerText = "Failed to send Email,Please try again later!!";
-            });
-        }
-    </script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
-    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function () {
             emailjs.init({
-                publicKey: "dTz9H0afkZT3c95K3",
+                publicKey: "dTz9H0afkZT3c95K3"
             });
         })();
+
+        var tablinks = document.getElementsByClassName("tab-links");
+        var tabcontents = document.getElementsByClassName("tab-contents");
+        function openTab(tabname) {
+            for (let tablink of tablinks) {
+                tablink.classList.remove("active-link");
+            }
+            for (let tabcontent of tabcontents) {
+                tabcontent.classList.remove("active-tab");
+            }
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add("active-link");
+            }
+            document.getElementById(tabname).classList.add("active-tab");
+        }
+
+        function sendMail(event) {
+            event.preventDefault();
+            const submitBtn = document.getElementById("submit-btn");
+            const msgSpan = document.getElementById("msg");
+
+            const nameInput = document.getElementById("exampleFormControlInput1").value.trim();
+            const emailInput = document.getElementById("exampleFormControlInput2").value.trim();
+            const messageInput = document.getElementById("exampleFormControlTextarea1").value.trim();
+
+            if (!nameInput || !emailInput || !messageInput) {
+                msgSpan.innerText = "Please fill in all fields.";
+                msgSpan.style.color = "#ff4d4d";
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.value = "Sending...";
+            msgSpan.innerText = "";
+
+            let parms = {
+                name: nameInput,
+                from_name: nameInput,
+                email: emailInput,
+                from_email: emailInput,
+                reply_to: emailInput,
+                message: messageInput
+            };
+
+            emailjs.send("service_gmshagz", "template_rufc6pi", parms, "dTz9H0afkZT3c95K3")
+                .then(function (response) {
+                    console.log("Email Sent Successfully", response);
+                    submitBtn.disabled = false;
+                    submitBtn.value = "Submit";
+                    msgSpan.innerText = "✓ Message Sent Successfully!";
+                    msgSpan.style.color = "#00ff88";
+                    document.querySelector("form").reset();
+                    setTimeout(() => {
+                        msgSpan.innerText = "";
+                    }, 6000);
+                })
+                .catch(function (error) {
+                    console.error("Email send failed:", error);
+                    submitBtn.disabled = false;
+                    submitBtn.value = "Submit";
+                    let detail = (error && error.text) ? error.text : ((error && error.message) ? error.message : "Service temporarily unavailable");
+                    msgSpan.innerText = "Failed to send: " + detail + ". Please email asmi11112005@gmail.com directly.";
+                    msgSpan.style.color = "#ff4d4d";
+                });
+        }
     </script>
 </body>
 

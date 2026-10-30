@@ -488,9 +488,11 @@ body {
 }
 
 #msg {
-    font-size: 13px;
+    font-size: 14px;
     display: block;
-    margin-top: 5px;
+    margin-top: 10px;
+    font-weight: 500;
+    min-height: 20px;
 }
 
 .row {
